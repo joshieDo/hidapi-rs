@@ -96,6 +96,11 @@ fn compile_linux() {
         (
             "LINUX_STATIC_RUSB",
             Box::new(|| {
+                // https://docs.rs/about/builds#detecting-docsrs
+                if env::var("DOCS_RS").is_ok() {
+                    return;
+                }
+
                 // It's expecting it to be on the system, but the file is local
                 replace_on_file("etc/hidapi/libusb/hid.c", "<libusb.h>", "\"libusb.h\"");
 
