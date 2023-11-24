@@ -29,7 +29,9 @@ jobs:
   build-macos:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -40,7 +42,8 @@ jobs:
       - run: env
       - uses: actions-rs/cargo@v1
         with:
-          command: build 
+          command: build
+          args: --example open_first_device
         env:
           RUSTFLAGS: "--print link-args"
       - run: otool -L target/debug/examples/open_first_device
