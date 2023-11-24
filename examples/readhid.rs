@@ -8,7 +8,7 @@
 //! example will not work unless such an HID is plugged in to your system.
 //! Will update in the future to support all HIDs.
 
-#[cfg(feature = "linux-static-rusb")]
+#[cfg(all(feature = "linux-static-rusb", not(target_os = "macos")))]
 extern crate rusb;
 
 extern crate hidapi_rusb;

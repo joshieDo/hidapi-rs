@@ -7,7 +7,7 @@ This file is part of hidapi-rs, based on hidapi_rust by Roland Ruckerbauer.
 //! This example shows the added possibility (after version 0.4.1),
 //! to move devices into a function / or closure with static lifetime bounds.
 
-#[cfg(feature = "linux-static-rusb")]
+#[cfg(all(feature = "linux-static-rusb", not(target_os = "macos")))]
 extern crate rusb;
 
 extern crate hidapi_rusb;
