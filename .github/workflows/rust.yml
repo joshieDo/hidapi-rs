@@ -10,20 +10,37 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-
+  build-ubuntu:
     runs-on: ubuntu-latest
-
     steps:
-    - name: checkout repository and submodules
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Install dependencies
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y libudev-dev
-    - name: Build
-      run: cargo build --no-default-features --features linux-static-hidraw --verbose
-    - name: Run tests
-      run: cargo test --no-default-features --features linux-static-hidraw --verbose
+      - name: checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libudev-dev
+      - name: Build
+        run: cargo build --no-default-features --features linux-static-hidraw --verbose
+      - name: Run tests
+        run: cargo test --no-default-features --features linux-static-hidraw --verbose
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+          target: x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+      - run: env
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build 
+        env:
+          RUSTFLAGS: "--print link-args"
+      - run: otool -L target/debug/examples/open_first_device
