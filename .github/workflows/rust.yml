@@ -40,7 +40,7 @@ jobs:
       - run: env
       - uses: actions-rs/cargo@v1
         with:
-          command: build 
+          command: build --examples open_first_device
         env:
           RUSTFLAGS: "--print link-args"
       - run: otool -L target/debug/examples/open_first_device
