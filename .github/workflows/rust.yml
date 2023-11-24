@@ -13,49 +13,45 @@ jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout repository and submodules
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Install dependencies
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y libudev-dev
-    - name: Build
-      run: cargo build --no-default-features --features linux-static-hidraw --verbose
-    - name: Run tests
-      run: cargo test --no-default-features --features linux-static-hidraw --verbose
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libudev-dev
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - name: Build
+        run: cargo build --no-default-features --features linux-static-hidraw --verbose
+      - name: Run tests
+        run: cargo test --no-default-features --features linux-static-hidraw --verbose
 
   build-macos:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: actions-rs/toolchain@v1
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
           components: rustfmt, clippy
-          target: x86_64-apple-darwin
-      - uses: Swatinem/rust-cache@v2
-      - run: env
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --example open_first_device
-        env:
-          RUSTFLAGS: "--print link-args"
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Build example
+        run: cargo build --example open_first_device --verbose
       - name: Check for libusb
         run: |
           otool -L target/debug/examples/open_first_device | grep libusb && exit 1 || exit 0
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --example open_first_device
-        env:
-          RUSTFLAGS: "--print link-args"
-    - name: Build
-      run: cargo build --no-default-features --features linux-static-hidraw --verbose
-    - name: Run tests
-      run: cargo test --no-default-features --features linux-static-hidraw --verbose
+      - name: Build
+        run: cargo build --no-default-features --features linux-static-hidraw --verbose
+      - name: Run tests
+        run: cargo test --no-default-features --features linux-static-hidraw --verbose
