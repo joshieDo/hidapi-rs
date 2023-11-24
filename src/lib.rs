@@ -15,9 +15,9 @@
 //! # Example
 //!
 //! ```rust,no_run
-//! extern crate hidapi;
+//! extern crate hidapi_rusb;
 //!
-//! use hidapi::HidApi;
+//! use hidapi_rusb::HidApi;
 //!
 //! fn main() {
 //!     println!("Printing all available hid devices:");

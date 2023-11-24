@@ -49,4 +49,13 @@ jobs:
       - name: Check for libusb
         run: |
           otool -L target/debug/examples/open_first_device | grep libusb && exit 1 || exit 0
-
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --example open_first_device
+        env:
+          RUSTFLAGS: "--print link-args"
+    - name: Build
+      run: cargo build --no-default-features --features linux-static-hidraw --verbose
+    - name: Run tests
+      run: cargo test --no-default-features --features linux-static-hidraw --verbose
