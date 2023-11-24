@@ -6,7 +6,7 @@
 
 //! Prints out a list of HID devices
 
-#[cfg(feature = "linux-static-rusb")]
+#[cfg(all(feature = "linux-static-rusb", not(target_os = "macos")))]
 extern crate rusb;
 
 extern crate hidapi_rusb;

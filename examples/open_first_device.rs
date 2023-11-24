@@ -7,7 +7,7 @@
 //! Opens the first hid device it can find, and reads data in a blocking fashion
 //! from it in an endless loop.
 
-#[cfg(feature = "linux-static-rusb")]
+#[cfg(all(feature = "linux-static-rusb", not(target_os = "macos")))]
 extern crate rusb;
 
 extern crate hidapi_rusb;
